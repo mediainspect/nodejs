@@ -15,9 +15,54 @@ attach to the docker
 
 update readme
 create changelog 
-update changelog and add new version to changelog
+
+add new version to changelog
 
 # TODO
+
+- [x] Add new version (0.6.0) to changelog
+- [ ] Update documentation to reflect the use of .env file for configuration
+- [ ] Consider implementing a fallback mechanism if .env file is not present
+- [ ] Remove unused config.json file if it's no longer needed
+- [ ] Investigate and resolve babel-jest dependency conflict for a long-term solution
+- [ ] Ensure all frontend components are using the updated API_URL
+- [ ] Update documentation to reflect the combined frontend and backend setup
+- [ ] Ensure all API endpoints are correctly accessed from the frontend
+- [ ] Update deployment process to build and serve the React app
+- [ ] Test the combined application thoroughly
+- [ ] Update Docker configuration to build and serve the combined app
+- [ ] Consider implementing server-side rendering for improved performance
+- [ ] Implement proper error handling and display for user operations
+- [ ] Add form validation for registration and login
+- [ ] Implement token storage for persistent login
+- [ ] Create a separate page or modal for media upload
+- [ ] Implement media item deletion and editing in the frontend
+- [ ] Add styling to the user interface
+- [ ] Implement user roles and permissions
+- [ ] Add unit tests for new React components and media operations
+- [ ] Update API documentation to include new user-related endpoints
+- [ ] Implement real-time updates for media conversion progress
+- [ ] Add support for batch operations on multiple media files
+- [ ] Implement drag-and-drop file upload
+- [ ] Add preview functionality for media files
+- [ ] Implement search and filter options for media items
+- [ ] Optimize performance for large lists of media items
+- [ ] Implement error boundary to catch and display runtime errors
+- [ ] Test upload.sh script with various file types and sizes
+- [ ] Add error handling for network issues in upload.sh
+- [ ] Implement file type validation in the server's upload endpoint
+- [ ] Add progress indicator for file uploads in the frontend
+- [ ] Implement resume functionality for interrupted uploads
+- [ ] Create a similar script for other API operations (e.g., convert, perform media operation)
+- [ ] Update documentation to include usage instructions for upload.sh
+- [ ] Consider implementing a rate limiting mechanism for uploads
+- [ ] Add support for batch uploads in both the script and the server
+- [ ] Implement client-side file compression before upload to reduce transfer time
+- [ ] Add option in upload.sh to specify custom headers or additional form fields
+- [ ] Create a config file for upload.sh to store API URL, default username, etc.
+- [ ] Implement a retry mechanism for failed uploads in upload.sh
+- [ ] Add logging functionality to upload.sh for debugging purposes
+- [ ] Consider creating a more comprehensive CLI tool for interacting with the media server
 
 - [x] Implement basic CRUD operations for media items
 - [x] Add error handling for port conflicts
@@ -50,3 +95,122 @@ update changelog and add new version to changelog
 - [x] Create basic React frontend
 - [x] Create Selenium tests for frontend
 - [x] Create test.sh script to run all tests
+- [x] Update CHANGELOG.md with version 0.4.0
+- [x] Replace hardcoded localhost:3000 with environment variables in backend
+- [x] Replace hardcoded localhost:3000 with environment variables in frontend (App.js)
+- [x] Update .env file to include SKIP_PREFLIGHT_CHECK for React dependency conflict
+- [x] Update frontend tests to use environment variables
+- [x] Set React app port from .env file
+- [x] Update app/package.json to use PORT from .env
+- [x] Ensure React app and API are running on different ports
+- [ ] Update documentation to reflect the use of .env file for configuration
+- [ ] Consider implementing a fallback mechanism if .env file is not present
+- [ ] Remove unused config.json file if it's no longer needed
+- [ ] Investigate and resolve babel-jest dependency conflict for a long-term solution
+- [ ] Ensure all frontend components are using the updated API_URL
+- [ ] Update documentation to reflect the combined frontend and backend setup
+- [ ] Ensure all API endpoints are correctly accessed from the frontend
+- [ ] Update deployment process to build and serve the React app
+- [ ] Test the combined application thoroughly
+- [ ] Update Docker configuration to build and serve the combined app
+- [ ] Consider implementing server-side rendering for improved performance
+- [x] Create user view in React app (registration, login, profile)
+- [x] Implement media operations (upload, convert, etc.) in the frontend
+- [x] Add form for file upload and conversion
+- [x] Add buttons for stream conversion and media operations
+- [ ] Implement proper error handling and display for user operations
+- [ ] Add form validation for registration and login
+- [ ] Implement token storage for persistent login
+- [ ] Create a separate page or modal for media upload
+- [ ] Implement media item deletion and editing in the frontend
+- [ ] Add styling to the user interface
+- [ ] Implement user roles and permissions
+- [ ] Add unit tests for new React components and media operations
+- [ ] Update API documentation to include new user-related endpoints
+- [ ] Implement real-time updates for media conversion progress
+- [ ] Add support for batch operations on multiple media files
+- [ ] Implement drag-and-drop file upload
+- [ ] Add preview functionality for media files
+- [ ] Implement search and filter options for media items
+- [ ] Optimize performance for large lists of media items
+- [ ] Implement error boundary to catch and display runtime errors
+- [x] Fix ReferenceError in media_server.js (app not defined)
+- [x] Update package.json to include React app build step
+- [ ] Build React app before starting the server
+- [ ] Update documentation to reflect the build process
+- [ ] Consider implementing a fallback mechanism if .env file is not present
+- [ ] Remove unused config.json file if it's no longer needed
+- [ ] Investigate and resolve babel-jest dependency conflict for a long-term solution
+- [ ] Ensure all frontend components are using the updated API_URL
+- [ ] Update documentation to reflect the combined frontend and backend setup
+- [ ] Ensure all API endpoints are correctly accessed from the frontend
+- [ ] Update deployment process to build and serve the React app
+- [ ] Test the combined application thoroughly
+- [ ] Update Docker configuration to build and serve the combined app
+- [ ] Consider implementing server-side rendering for improved performance
+- [ ] Implement proper error handling and display for user operations
+- [ ] Add form validation for registration and login
+- [ ] Implement token storage for persistent login
+- [ ] Create a separate page or modal for media upload
+- [ ] Implement media item deletion and editing in the frontend
+- [ ] Add styling to the user interface
+- [ ] Implement user roles and permissions
+- [ ] Add unit tests for new React components and media operations
+- [ ] Update API documentation to include new user-related endpoints
+- [ ] Implement real-time updates for media conversion progress
+- [ ] Add support for batch operations on multiple media files
+- [ ] Implement drag-and-drop file upload
+- [ ] Add preview functionality for media files
+- [ ] Implement search and filter options for media items
+- [ ] Optimize performance for large lists of media items
+- [ ] Implement error boundary to catch and display runtime errors
+- [x] Create upload.sh script to upload files using curl with authentication
+- [ ] Test upload.sh script with various file types and sizes
+- [ ] Add error handling for network issues in upload.sh
+- [ ] Implement file type validation in the server's upload endpoint
+- [ ] Add progress indicator for file uploads in the frontend
+- [ ] Implement resume functionality for interrupted uploads
+- [ ] Create a similar script for other API operations (e.g., convert, perform media operation)
+- [ ] Update documentation to include usage instructions for upload.sh
+- [ ] Consider implementing a rate limiting mechanism for uploads
+- [ ] Add support for batch uploads in both the script and the server
+- [ ] Implement client-side file compression before upload to reduce transfer time
+- [ ] Add option in upload.sh to specify custom headers or additional form fields
+- [ ] Create a config file for upload.sh to store API URL, default username, etc.
+- [ ] Implement a retry mechanism for failed uploads in upload.sh
+- [ ] Add logging functionality to upload.sh for debugging purposes
+- [ ] Consider creating a more comprehensive CLI tool for interacting with the media server
+- [x] Add comprehensive logging to media_server.js
+- [ ] Implement log rotation to manage log file sizes
+- [ ] Add log analysis tools to monitor application health and performance
+- [ ] Create a dashboard for visualizing log data
+- [ ] Implement centralized logging for distributed deployments
+- [ ] Add request ID to logs for better request tracing
+- [ ] Implement log filtering and searching capabilities
+- [ ] Add performance metrics logging
+- [ ] Implement alerts based on log patterns or error frequencies
+- [ ] Create a log retention policy
+- [ ] Add logging for database operations when implemented
+- [ ] Implement logging for authentication and authorization events
+- [ ] Add logging for file system operations
+- [ ] Create a log format that's easily parseable by log analysis tools
+- [ ] Implement different log levels for development and production environments
+- [x] Fix CORS issues between media_server.js and React app
+- [ ] Test all API endpoints from the React app to ensure CORS is working correctly
+- [ ] Implement proper error handling for CORS-related issues in the frontend
+- [ ] Consider implementing more granular CORS rules for different routes if needed
+- [ ] Update documentation to reflect CORS configuration
+- [ ] Ensure CORS configuration is properly set for different environments (development, staging, production)
+- [ ] Implement security best practices for CORS (e.g., validate Origin header)
+- [ ] Consider using a reverse proxy (e.g., Nginx) for production to handle CORS
+- [ ] Add CORS configuration to Docker setup
+- [x] Fix token extraction in upload.sh script
+- [ ] Add error handling for JSON parsing in upload.sh
+- [ ] Implement a more robust way to handle different JSON response structures
+- [ ] Add a verbose mode to upload.sh for detailed logging
+- [ ] Create a test suite for upload.sh to ensure it works with different server responses
+- [ ] Document the expected server response format for login and upload endpoints
+- [ ] Consider adding a configuration file for upload.sh to store API URL, credentials, etc.
+- [ ] Implement a retry mechanism for failed uploads in upload.sh
+- [ ] Add support for uploading multiple files in a single script execution
+- [ ] Implement progress tracking for large file uploads

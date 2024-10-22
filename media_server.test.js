@@ -3,6 +3,9 @@ const request = require('supertest');
 const app = require('./media_server');
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
+
+const baseURL = `http://${process.env.HOST || 'localhost'}:${process.env.PORT || 3000}`;
 
 describe('Media Server API', () => {
   let authToken;
@@ -108,5 +111,11 @@ describe('Media Server API', () => {
       expect(fileExtensions).toBeDefined();
       expect(Array.isArray(fileExtensions)).toBe(true);
     });
+  });
+
+  test('GET /api/media returns a list of media files', async () => {
+    const response = await axios.get(`${baseURL}/api/media`);
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.data)).toBe(true);
   });
 });

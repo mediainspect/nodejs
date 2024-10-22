@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2023-05-25
+
+### Added
+- Implemented CORS support for cross-origin requests
+- Created upload.sh script for file uploads using curl with authentication
+- Added comprehensive logging using Winston
+- Implemented error handling for token extraction in upload.sh
+
+### Changed
+- Updated media_server.js to use CORS middleware
+- Refactored React components to use the correct API URL from environment variables
+- Updated package.json to include new dependencies (cors, winston)
+
+### Fixed
+- Resolved CORS issues between media_server.js and React app
+- Fixed token extraction in upload.sh script
+
+## [0.5.0] - 2023-05-20
+
+### Added
+- React frontend for the media server
+- User authentication in the frontend (registration, login, profile)
+- Media operations in the frontend (upload, convert, stream conversion)
+- Environment variable configuration for the React app
+- Separate port configuration for frontend and backend
+
+### Changed
+- Updated backend to serve the React app
+- Refactored App.js to use functional components and hooks
+- Updated API calls to use environment variables for URL and port
+
+### Fixed
+- ESLint warnings in App.js
+- Resolved conflicts between frontend and backend ports
+
+## [0.4.0] - 2023-05-01
+
+### Added
+- Basic React frontend
+- Selenium tests for frontend
+- test.sh script to run all tests
+
+### Changed
+- Updated backend to use environment variables instead of hardcoded values
+- Moved all configuration to .env file
+
 ## [0.3.0] - 2023-04-16
 
 ### Added

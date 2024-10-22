@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -7,13 +8,38 @@ const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
+const winston = require('winston');
+
+// Initialize Express app
 const app = express();
 
+// Configure CORS
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:3006',
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
+// Configure Winston logger
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' })
+  ]
+});
+
 // Load environment variables
-const PORT = process.env.STREAM_SERVER_PORT || 3000;
+const PORT = process.env.PORT || 3000;
 const MAX_PORT_ATTEMPTS = 10;
 const UPLOAD_DIR = process.env.UPLOAD_DIR || 'uploads';
 const CONVERTED_DIR = process.env.CONVERTED_DIR || 'converted';
+const HOST = process.env.HOST || 'localhost';
 
 app.use(express.json());
 
@@ -37,18 +63,24 @@ const upload = multer({ storage: storage });
 const protocols = JSON.parse(fs.readFileSync(path.join(__dirname, process.env.PROTOCOLS_JSON_PATH), 'utf8'));
 const fileExtensions = JSON.parse(fs.readFileSync(path.join(__dirname, process.env.FILE_EXTENSIONS_JSON_PATH), 'utf8'));
 
+logger.info('Loaded protocols and file extensions');
+
 // Generic media operations
 const mediaOperations = {
   convert: (input, inputFormat, outputFormat) => {
+    logger.info(`Converting media: ${input} from ${inputFormat} to ${outputFormat}`);
     // Implementation for converting media formats
   },
   transcode: (input, outputCodec) => {
+    logger.info(`Transcoding media: ${input} to ${outputCodec}`);
     // Implementation for transcoding media
   },
   extractAudio: (input, output) => {
+    logger.info(`Extracting audio: ${input} to ${output}`);
     // Implementation for extracting audio from video
   },
   extractMetadata: (input) => {
+    logger.info(`Extracting metadata: ${input}`);
     // Implementation for extracting metadata from media files
   }
 };
@@ -62,11 +94,18 @@ const mediaItems = [];
 // Middleware to verify JWT token
 const verifyToken = (req, res, next) => {
   const token = req.headers['x-access-token'];
-  if (!token) return res.status(403).send({ auth: false, message: 'No token provided.' });
+  if (!token) {
+    logger.warn('No token provided for authentication');
+    return res.status(403).send({ auth: false, message: 'No token provided.' });
+  }
   
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+    if (err) {
+      logger.error('Failed to authenticate token', { error: err });
+      return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+    }
     req.userId = decoded.id;
+    logger.info('Token verified successfully', { userId: req.userId });
     next();
   });
 };
@@ -81,21 +120,29 @@ app.post('/register', (req, res) => {
     password: hashedPassword
   });
   
+  logger.info('New user registered', { username: req.body.username });
   res.status(201).send({ message: 'User registered successfully' });
 });
 
 // User login endpoint
 app.post('/login', (req, res) => {
   const user = users.find(u => u.username === req.body.username);
-  if (!user) return res.status(404).send('No user found.');
+  if (!user) {
+    logger.warn('Login attempt failed: User not found', { username: req.body.username });
+    return res.status(404).send('No user found.');
+  }
   
   const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
-  if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
+  if (!passwordIsValid) {
+    logger.warn('Login attempt failed: Invalid password', { username: req.body.username });
+    return res.status(401).send({ auth: false, token: null });
+  }
   
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
     expiresIn: 86400 // expires in 24 hours
   });
   
+  logger.info('User logged in successfully', { username: req.body.username });
   res.status(200).send({ auth: true, token: token });
 });
 
@@ -108,14 +155,18 @@ app.get('/convert', (req, res) => {
   const { input, inputProtocol, outputProtocol } = req.query;
 
   if (!input || !inputProtocol || !outputProtocol) {
+    logger.warn('Convert request missing required parameters');
     return res.status(400).send('Missing required parameters');
   }
 
   const supportedProtocols = protocols.map(p => p.protocol.toLowerCase());
 
   if (!supportedProtocols.includes(inputProtocol.toLowerCase()) || !supportedProtocols.includes(outputProtocol.toLowerCase())) {
+    logger.warn('Convert request with unsupported protocol', { inputProtocol, outputProtocol });
     return res.status(400).send('Unsupported protocol');
   }
+
+  logger.info('Starting stream conversion', { input, inputProtocol, outputProtocol });
 
   const ffmpeg = spawn('ffmpeg', [
     '-i', `${inputProtocol}:${input}`,
@@ -128,15 +179,17 @@ app.get('/convert', (req, res) => {
   ffmpeg.stdout.pipe(res);
 
   ffmpeg.stderr.on('data', (data) => {
-    console.error(`FFmpeg Error: ${data}`);
+    logger.error(`FFmpeg Error: ${data}`);
   });
 
   ffmpeg.on('close', (code) => {
     if (code !== 0) {
-      console.error(`FFmpeg process exited with code ${code}`);
+      logger.error(`FFmpeg process exited with code ${code}`);
       if (!res.headersSent) {
         res.status(500).send('Conversion failed');
       }
+    } else {
+      logger.info('Stream conversion completed successfully');
     }
   });
 });
@@ -146,17 +199,21 @@ app.post('/media/operation', (req, res) => {
   const { operation, input, params } = req.body;
 
   if (!operation || !input) {
+    logger.warn('Media operation request missing required parameters');
     return res.status(400).send('Missing required parameters');
   }
 
   if (!mediaOperations[operation]) {
+    logger.warn('Unsupported media operation requested', { operation });
     return res.status(400).send('Unsupported operation');
   }
 
   try {
+    logger.info(`Performing media operation: ${operation}`, { input, params });
     const result = mediaOperations[operation](input, ...params);
     res.json({ success: true, result });
   } catch (error) {
+    logger.error('Error performing media operation', { operation, error: error.message });
     res.status(500).json({ success: false, error: error.message });
   }
 });
@@ -164,17 +221,21 @@ app.post('/media/operation', (req, res) => {
 // New endpoint for file upload with on-the-fly conversion
 app.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
+    logger.warn('Upload request without file');
     return res.status(400).send('No file uploaded.');
   }
 
   const { outputFormat } = req.body;
   if (!outputFormat) {
+    logger.warn('Upload request without output format');
     return res.status(400).send('Output format not specified.');
   }
 
   const inputPath = req.file.path;
   const outputFileName = path.basename(inputPath, path.extname(inputPath)) + '.' + outputFormat;
   const outputPath = path.join(CONVERTED_DIR, outputFileName);
+
+  logger.info('Starting file conversion', { inputPath, outputPath, outputFormat });
 
   const ffmpeg = spawn('ffmpeg', [
     '-i', inputPath,
@@ -184,22 +245,25 @@ app.post('/upload', upload.single('file'), (req, res) => {
   ]);
 
   ffmpeg.stderr.on('data', (data) => {
-    console.error(`FFmpeg Error: ${data}`);
+    logger.error(`FFmpeg Error: ${data}`);
   });
 
   ffmpeg.on('close', (code) => {
     if (code === 0) {
+      logger.info('File conversion completed successfully', { outputFileName });
       res.json({
         message: 'File uploaded and converted successfully',
         originalName: req.file.originalname,
         convertedName: outputFileName
       });
     } else {
+      logger.error('File conversion failed', { code });
       res.status(500).send('Conversion failed');
     }
 
     // Clean up the original uploaded file
     fs.unlinkSync(inputPath);
+    logger.info('Cleaned up original uploaded file', { inputPath });
   });
 });
 
@@ -211,6 +275,7 @@ const validateMediaItem = [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      logger.warn('Invalid media item data', { errors: errors.array() });
       return res.status(400).json({ errors: errors.array() });
     }
     next();
@@ -220,12 +285,14 @@ const validateMediaItem = [
 // Example route for creating a media item with validation
 app.post('/media', verifyToken, validateMediaItem, (req, res) => {
   // Create media item logic here
+  logger.info('New media item created', { title: req.body.title, type: req.body.type });
   res.status(201).json({ message: 'Media item created successfully' });
 });
 
 // Example route for updating a media item with validation
 app.put('/media/:id', verifyToken, validateMediaItem, (req, res) => {
   // Update media item logic here
+  logger.info('Media item updated', { id: req.params.id, title: req.body.title, type: req.body.type });
   res.json({ message: 'Media item updated successfully' });
 });
 
@@ -254,25 +321,36 @@ app.get('/media', verifyToken, (req, res) => {
 
   results.results = mediaItems.slice(startIndex, endIndex);
 
+  logger.info('Media items retrieved', { page, limit, itemCount: results.results.length });
   res.json(results);
 });
 
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'app/build')));
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'app/build', 'index.html'));
+});
+
 function startServer(port, attempt = 1) {
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  app.listen(port, HOST, () => {
+    logger.info(`Media server running at http://${HOST}:${port}`);
+    logger.info(`CORS enabled for origin: ${corsOptions.origin}`);
   }).on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
-      console.error(`Port ${port} is already in use.`);
+      logger.error(`Port ${port} is already in use.`);
       if (attempt < MAX_PORT_ATTEMPTS) {
         const nextPort = port + 1;
-        console.log(`Trying port ${nextPort}`);
+        logger.info(`Trying port ${nextPort}`);
         startServer(nextPort, attempt + 1);
       } else {
-        console.error(`Failed to find an available port after ${MAX_PORT_ATTEMPTS} attempts.`);
+        logger.error(`Failed to find an available port after ${MAX_PORT_ATTEMPTS} attempts.`);
         process.exit(1);
       }
     } else {
-      console.error('An error occurred while starting the server:', err);
+      logger.error('An error occurred while starting the server:', err);
       process.exit(1);
     }
   });

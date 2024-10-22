@@ -1,93 +1,111 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import Register from './components/Register';
+import Login from './components/Login';
+import Profile from './components/Profile';
+import { uploadFile, convertStream, performMediaOperation, getMediaItems } from './mediaOperations';
 
 function App() {
-  const [mediaItems, setMediaItems] = useState([]);
-  const [title, setTitle] = useState('');
-  const [type, setType] = useState('video');
-  const [url, setUrl] = useState('');
-  const [token, setToken] = useState('');
+  const [user, setUser] = useState(null);
+  const [data, setData] = useState(null);
+  const [file, setFile] = useState(null);
+  const [outputFormat, setOutputFormat] = useState('mp4');
 
   useEffect(() => {
-    if (token) {
-      fetchMediaItems();
-    }
-  }, [token]);
+    const fetchData = async () => {
+      if (user) {
+        try {
+          const mediaData = await getMediaItems();
+          setData(mediaData.results);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+    };
 
-  const fetchMediaItems = async () => {
+    fetchData();
+  }, [user]);
+
+  const handleRegister = (userData) => {
+    setUser(userData);
+  };
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setData(null);
+  };
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (!file) {
+      alert('Please select a file first');
+      return;
+    }
     try {
-      const response = await axios.get('http://localhost:3000/media', {
-        headers: { 'x-access-token': token }
-      });
-      setMediaItems(response.data.results);
+      const result = await uploadFile(file, outputFormat);
+      alert(`File uploaded and converted successfully: ${result.convertedName}`);
     } catch (error) {
-      console.error('Error fetching media items:', error);
+      alert('Error uploading file');
     }
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleConvertStream = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/login', {
-        username: 'testuser',
-        password: 'testpassword'
-      });
-      setToken(response.data.token);
+      await convertStream('http://example.com/input.mp4', 'http', 'rtmp');
+      alert('Stream converted successfully');
     } catch (error) {
-      console.error('Login error:', error);
+      alert('Error converting stream');
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleMediaOperation = async () => {
     try {
-      await axios.post('http://localhost:3000/media', 
-        { title, type, url },
-        { headers: { 'x-access-token': token } }
-      );
-      setTitle('');
-      setType('video');
-      setUrl('');
-      fetchMediaItems();
+      await performMediaOperation('convert', 'input.mp4', ['output.avi']);
+      alert('Media operation performed successfully');
     } catch (error) {
-      console.error('Error creating media item:', error);
+      alert('Error performing media operation');
     }
   };
 
   return (
     <div className="App">
-      <h1>Media Server Frontend</h1>
-      {!token ? (
-        <button onClick={handleLogin}>Login</button>
+      <h1>Media Server</h1>
+      {user ? (
+        <>
+          <Profile user={user} onLogout={handleLogout} />
+          <div>
+            <input type="file" onChange={handleFileChange} />
+            <select value={outputFormat} onChange={(e) => setOutputFormat(e.target.value)}>
+              <option value="mp4">MP4</option>
+              <option value="avi">AVI</option>
+              <option value="mov">MOV</option>
+            </select>
+            <button onClick={handleUpload}>Upload and Convert</button>
+          </div>
+          <div>
+            <button onClick={handleConvertStream}>Convert Stream</button>
+            <button onClick={handleMediaOperation}>Perform Media Operation</button>
+          </div>
+          {data ? (
+            <ul>
+              {data.map(item => (
+                <li key={item.id}>{item.title}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </>
       ) : (
         <>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Title"
-              required
-            />
-            <select value={type} onChange={(e) => setType(e.target.value)}>
-              <option value="video">Video</option>
-              <option value="audio">Audio</option>
-            </select>
-            <input
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="URL"
-              required
-            />
-            <button type="submit">Add Media Item</button>
-          </form>
-          <h2>Media Items:</h2>
-          <ul>
-            {mediaItems.map((item, index) => (
-              <li key={index}>{item.title} - {item.type}</li>
-            ))}
-          </ul>
+          <Register onRegister={handleRegister} />
+          <Login onLogin={handleLogin} />
         </>
       )}
     </div>

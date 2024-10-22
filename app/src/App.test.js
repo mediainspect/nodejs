@@ -1,38 +1,49 @@
-const { Builder, By, Key, until } = require('selenium-webdriver');
-const chrome = require('selenium-webdriver/chrome');
+import React from 'react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import axios from 'axios';
+import App from './App';
 
-describe('Media Server Frontend', () => {
-  let driver;
+// Mock axios
+jest.mock('axios');
 
-  beforeAll(async () => {
-    driver = await new Builder().forBrowser('chrome').build();
+jest.mock('./mediaOperations', () => ({
+  uploadFile: jest.fn(),
+  convertStream: jest.fn(),
+  performMediaOperation: jest.fn(),
+  getMediaItems: jest.fn(),
+}));
+
+describe('App component', () => {
+  test('renders login and register forms when not logged in', () => {
+    render(<App />);
+    expect(screen.getByText('Register')).toBeInTheDocument();
+    expect(screen.getByText('Login')).toBeInTheDocument();
   });
 
-  afterAll(async () => {
-    await driver.quit();
+  test('renders profile and media operations when logged in', async () => {
+    const mockUser = { username: 'testuser', token: 'testtoken' };
+    const mockData = [{ id: 1, title: 'Test Media' }];
+    
+    axios.get.mockResolvedValueOnce({ data: { results: mockData } });
+
+    render(<App />);
+    
+    // Simulate login
+    fireEvent.click(screen.getByText('Login'));
+    await waitFor(() => {
+      expect(screen.getByText('Welcome, testuser!')).toBeInTheDocument();
+    });
+
+    // Check if media operations are rendered
+    expect(screen.getByText('Upload and Convert')).toBeInTheDocument();
+    expect(screen.getByText('Convert Stream')).toBeInTheDocument();
+    expect(screen.getByText('Perform Media Operation')).toBeInTheDocument();
+
+    // Check if media data is rendered
+    await waitFor(() => {
+      expect(screen.getByText('Test Media')).toBeInTheDocument();
+    });
   });
 
-  it('should login and add a media item', async () => {
-    await driver.get('http://localhost:3000');
-
-    // Login
-    await driver.findElement(By.css('button')).click();
-    await driver.wait(until.elementLocated(By.css('form')), 5000);
-
-    // Add media item
-    await driver.findElement(By.css('input[placeholder="Title"]')).sendKeys('Test Media');
-    await driver.findElement(By.css('select')).sendKeys('Video');
-    await driver.findElement(By.css('input[placeholder="URL"]')).sendKeys('http://example.com/test.mp4');
-    await driver.findElement(By.css('button[type="submit"]')).click();
-
-    // Wait for the new item to appear in the list
-    await driver.wait(until.elementLocated(By.xpath('//li[contains(text(), "Test Media")]')), 5000);
-
-    const mediaItems = await driver.findElements(By.css('li'));
-    expect(mediaItems.length).toBeGreaterThan(0);
-
-    const lastItem = await mediaItems[mediaItems.length - 1].getText();
-    expect(lastItem).toContain('Test Media');
-    expect(lastItem).toContain('video');
-  });
+  // Add more tests for upload, convert, and media operations...
 });
