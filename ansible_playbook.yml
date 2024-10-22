@@ -1,0 +1,63 @@
+---
+- name: Test Media Server
+  hosts: localhost
+  tasks:
+    - name: Install dependencies
+      npm:
+        path: "{{ playbook_dir }}"
+
+    - name: Start media server
+      command: node media_server.js
+      async: 300
+      poll: 0
+
+    - name: Wait for server to start
+      wait_for:
+        port: 3000
+        delay: 5
+
+    - name: Test user registration
+      uri:
+        url: http://localhost:3000/register
+        method: POST
+        body_format: json
+        body:
+          username: testuser
+          password: testpass
+      register: register_result
+
+    - name: Test user login
+      uri:
+        url: http://localhost:3000/login
+        method: POST
+        body_format: json
+        body:
+          username: testuser
+          password: testpass
+      register: login_result
+
+    - name: Test media creation
+      uri:
+        url: http://localhost:3000/media
+        method: POST
+        body_format: json
+        body:
+          title: Test Media
+          type: video
+          url: http://example.com/test.mp4
+        headers:
+          x-access-token: "{{ login_result.json.token }}"
+      register: create_media_result
+
+    - name: Test media retrieval
+      uri:
+        url: http://localhost:3000/media
+        method: GET
+        headers:
+          x-access-token: "{{ login_result.json.token }}"
+      register: get_media_result
+
+    # Add more tasks for other endpoints
+
+    - name: Stop media server
+      command: pkill -f "node media_server.js"

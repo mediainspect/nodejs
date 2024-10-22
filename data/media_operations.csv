@@ -1,0 +1,11 @@
+Operation,Type,Description
+Convert,Audio/Video,Convert media from one format to another
+Transcode,Audio/Video,Change the encoding of media
+ExtractAudio,Video,Extract audio track from video
+ExtractMetadata,Audio/Video,Extract metadata information from media files
+Trim,Audio/Video,Cut a portion of the media file
+Merge,Audio/Video,Combine multiple media files
+Resize,Video,Change the resolution or aspect ratio of a video
+AddSubtitles,Video,Add subtitles to a video file
+AdjustVolume,Audio,Increase or decrease the volume of audio
+Normalize,Audio,Adjust audio levels to a standard level

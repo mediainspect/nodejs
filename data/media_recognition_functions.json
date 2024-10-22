@@ -1,0 +1,52 @@
+[
+  {
+    "function": "SpeechRecognition",
+    "type": "Audio",
+    "description": "Convert speech to text"
+  },
+  {
+    "function": "ObjectDetection",
+    "type": "Video",
+    "description": "Identify and locate objects in video frames"
+  },
+  {
+    "function": "FaceRecognition",
+    "type": "Video",
+    "description": "Detect and identify faces in video frames"
+  },
+  {
+    "function": "SceneDetection",
+    "type": "Video",
+    "description": "Identify scene changes in a video"
+  },
+  {
+    "function": "AudioFingerprinting",
+    "type": "Audio",
+    "description": "Generate a unique fingerprint for audio identification"
+  },
+  {
+    "function": "LanguageDetection",
+    "type": "Audio",
+    "description": "Identify the spoken language in audio"
+  },
+  {
+    "function": "EmotionRecognition",
+    "type": "Audio/Video",
+    "description": "Detect emotions in speech or facial expressions"
+  },
+  {
+    "function": "OCR",
+    "type": "Video",
+    "description": "Extract text from video frames"
+  },
+  {
+    "function": "MusicGenreClassification",
+    "type": "Audio",
+    "description": "Identify the genre of a music track"
+  },
+  {
+    "function": "SpeakerDiarization",
+    "type": "Audio",
+    "description": "Identify and separate different speakers in audio"
+  }
+]

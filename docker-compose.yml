@@ -1,28 +1,27 @@
 version: '3'
 services:
-  stream_converter:
+  media-server:
     build: .
     ports:
-      - "${STREAM_SERVER_PORT}:${STREAM_SERVER_PORT}"
-    command: node media_server.js
+      - "${STREAM_SERVER_PORT:-3000}:3000"
     volumes:
-      - .:/app
-      - /app/node_modules
-    env_file:
-      - .env
+      - ./uploads:/usr/src/app/uploads
+      - ./converted:/usr/src/app/converted
+      - ./data:/usr/src/app/data
     environment:
-      - SERVER_FILE=media_server.js
-    network_mode: "host"  # This allows the container to access various network protocols
-
-  file_converter:
-    build: .
-    ports:
-      - "${FILE_SERVER_PORT}:${FILE_SERVER_PORT}"
-    command: node media_converter_server.js
-    volumes:
-      - .:/app
-      - /app/node_modules
-    env_file:
-      - .env
-    environment:
-      - SERVER_FILE=media_converter_server.js
+      - STREAM_SERVER_PORT=${STREAM_SERVER_PORT:-3000}
+      - FILE_SERVER_PORT=${FILE_SERVER_PORT:-3004}
+      - FFMPEG_VIDEO_CODEC=${FFMPEG_VIDEO_CODEC:-libx264}
+      - FFMPEG_AUDIO_CODEC=${FFMPEG_AUDIO_CODEC:-aac}
+      - UPLOAD_DIR=${UPLOAD_DIR:-uploads}
+      - CONVERTED_DIR=${CONVERTED_DIR:-converted}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - MAX_FILE_SIZE=${MAX_FILE_SIZE:-100000000}
+      - PROTOCOLS_JSON_PATH=${PROTOCOLS_JSON_PATH:-data/media_protocols.json}
+      - FILE_EXTENSIONS_JSON_PATH=${FILE_EXTENSIONS_JSON_PATH:-data/media_file_extensions.json}
+      - OPERATIONS_JSON_PATH=${OPERATIONS_JSON_PATH:-data/media_operations.json}
+      - RECOGNITION_FUNCTIONS_JSON_PATH=${RECOGNITION_FUNCTIONS_JSON_PATH:-data/media_recognition_functions.json}
+      - PROTOCOLS_CSV_PATH=${PROTOCOLS_CSV_PATH:-data/media_protocols.csv}
+      - FILE_EXTENSIONS_CSV_PATH=${FILE_EXTENSIONS_CSV_PATH:-data/media_file_extensions.csv}
+      - OPERATIONS_CSV_PATH=${OPERATIONS_CSV_PATH:-data/media_operations.csv}
+      - RECOGNITION_FUNCTIONS_CSV_PATH=${RECOGNITION_FUNCTIONS_CSV_PATH:-data/media_recognition_functions.csv}

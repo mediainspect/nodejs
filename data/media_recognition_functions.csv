@@ -1,0 +1,11 @@
+Function,Type,Description
+SpeechRecognition,Audio,Convert speech to text
+ObjectDetection,Video,Identify and locate objects in video frames
+FaceRecognition,Video,Detect and identify faces in video frames
+SceneDetection,Video,Identify scene changes in a video
+AudioFingerprinting,Audio,Generate a unique fingerprint for audio identification
+LanguageDetection,Audio,Identify the spoken language in audio
+EmotionRecognition,Audio/Video,Detect emotions in speech or facial expressions
+OCR,Video,Extract text from video frames
+MusicGenreClassification,Audio,Identify the genre of a music track
+SpeakerDiarization,Audio,Identify and separate different speakers in audio

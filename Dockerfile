@@ -1,18 +1,23 @@
+# Use an official Node.js runtime as the base image
 FROM node:14
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
 # Install FFmpeg
 RUN apt-get update && apt-get install -y ffmpeg
 
-WORKDIR /app
-
-COPY package*.json ./
-
+# Install app dependencies
 RUN npm install
 
+# Copy the rest of the application code
 COPY . .
 
-# Use an environment variable for the port
-EXPOSE ${STREAM_SERVER_PORT}
+# Expose the port the app runs on
+EXPOSE 3000
 
-# Use an environment variable for the command
-CMD ["sh", "-c", "node $SERVER_FILE"]
+# Define the command to run the app
+CMD ["node", "media_server.js"]

@@ -1,0 +1,52 @@
+[
+  {
+    "operation": "Convert",
+    "type": "Audio/Video",
+    "description": "Convert media from one format to another"
+  },
+  {
+    "operation": "Transcode",
+    "type": "Audio/Video",
+    "description": "Change the encoding of media"
+  },
+  {
+    "operation": "ExtractAudio",
+    "type": "Video",
+    "description": "Extract audio track from video"
+  },
+  {
+    "operation": "ExtractMetadata",
+    "type": "Audio/Video",
+    "description": "Extract metadata information from media files"
+  },
+  {
+    "operation": "Trim",
+    "type": "Audio/Video",
+    "description": "Cut a portion of the media file"
+  },
+  {
+    "operation": "Merge",
+    "type": "Audio/Video",
+    "description": "Combine multiple media files"
+  },
+  {
+    "operation": "Resize",
+    "type": "Video",
+    "description": "Change the resolution or aspect ratio of a video"
+  },
+  {
+    "operation": "AddSubtitles",
+    "type": "Video",
+    "description": "Add subtitles to a video file"
+  },
+  {
+    "operation": "AdjustVolume",
+    "type": "Audio",
+    "description": "Increase or decrease the volume of audio"
+  },
+  {
+    "operation": "Normalize",
+    "type": "Audio",
+    "description": "Adjust audio levels to a standard level"
+  }
+]
