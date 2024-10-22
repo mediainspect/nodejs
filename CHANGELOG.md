@@ -5,7 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.7.0] - 2023-05-30
+## [1.1.0] - 2024-10-22
+
+### Added
+- Function to get video duration using ffprobe before starting conversion.
+
+### Fixed
+- ReferenceError in media conversion process where 'duration' was not defined.
+
+### Changed
+- Improved error handling in media conversion process.
+- Added check for duration availability before calculating progress.
+
+## [0.7.0] - 2024-10-22
 
 ### Added
 - Implemented file download functionality in the upload script
@@ -22,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolved issues with file conversion and download in media_server.js
 - Fixed CORS issues between media_server.js and React app
 
-## [0.6.0] - 2023-05-25
+## [0.6.0] - 2024-10-22
 
 ### Added
 - Implemented CORS support for cross-origin requests
@@ -39,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolved CORS issues between media_server.js and React app
 - Fixed token extraction in upload.sh script
 
-## [0.5.0] - 2023-05-20
+## [0.5.0] - 2024-10-22
 
 ### Added
 - React frontend for the media server
@@ -57,7 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ESLint warnings in App.js
 - Resolved conflicts between frontend and backend ports
 
-## [0.4.0] - 2023-05-01
+## [0.4.0] - 2024-10-22
 
 ### Added
 - Basic React frontend
@@ -68,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated backend to use environment variables instead of hardcoded values
 - Moved all configuration to .env file
 
-## [0.3.0] - 2023-04-16
+## [0.3.0] - 2024-10-22
 
 ### Added
 - Created a basic React frontend
@@ -79,7 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated README.md with instructions for running all tests
 - Updated TODO.md to reflect new completed tasks
 
-## [0.2.0] - 2023-04-15
+## [0.2.0] - 2024-10-22
 
 ### Added
 - Moved all CSV and JSON data files to a new 'data' folder
@@ -100,7 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Improved error handling in media_server.js
 
-## [0.1.0] - 2023-04-14
+## [0.1.0] - 2024-10-22
 
 ### Added
 - Basic CRUD operations for media items

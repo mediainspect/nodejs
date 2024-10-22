@@ -59,16 +59,7 @@ A lightweight media server for handling various audio and video operations, incl
 
 ## Configuration
 
-The paths to CSV and JSON files are defined in the `.env` file. These files are located in the `data` folder. You can modify these paths according to your project structure:
-
-- `PROTOCOLS_JSON_PATH`: Path to the JSON file containing supported protocols
-- `FILE_EXTENSIONS_JSON_PATH`: Path to the JSON file containing supported file extensions
-- `OPERATIONS_JSON_PATH`: Path to the JSON file containing available media operations
-- `RECOGNITION_FUNCTIONS_JSON_PATH`: Path to the JSON file containing supported media recognition functions
-- `PROTOCOLS_CSV_PATH`: Path to the CSV file containing supported protocols
-- `FILE_EXTENSIONS_CSV_PATH`: Path to the CSV file containing supported file extensions
-- `OPERATIONS_CSV_PATH`: Path to the CSV file containing available media operations
-- `RECOGNITION_FUNCTIONS_CSV_PATH`: Path to the CSV file containing supported media recognition functions
+This project uses environment variables for configuration. Create a `.env` file in the root directory with the following variables:
 
 ## Supported Protocols
 
@@ -97,3 +88,21 @@ This project is licensed under the MIT License - see the LICENSE.md file for det
 ## Testing
 
 To run all tests (backend, frontend, server, and Ansible), use the following command:
+
+## Combined Frontend and Backend Setup
+
+This project combines a React frontend with an Express backend. The frontend is located in the `app` directory, while the backend is in the root directory.
+
+To run the combined application:
+
+1. Install dependencies:   ```
+   npm install
+   cd app && npm install   ```
+
+2. Build the frontend:   ```
+   npm run build   ```
+
+3. Start the server:   ```
+   npm start   ```
+
+The server will serve the React app and handle API requests.

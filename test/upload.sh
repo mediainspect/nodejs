@@ -9,6 +9,25 @@ handle_error() {
     exit 1
 }
 
+# Function to register a new user
+register_user() {
+    echo "Registering new user..."
+    REGISTER_RESPONSE=$(curl -s -X POST "${API_URL}/register" \
+        -H "Content-Type: application/json" \
+        -d "{\"username\":\"${USERNAME}\",\"password\":\"${PASSWORD}\"}")
+
+    echo "Register response: $REGISTER_RESPONSE"
+
+    if echo "$REGISTER_RESPONSE" | grep -q "User registered successfully"; then
+        echo "User registered successfully"
+    else
+        handle_error "Failed to register user: $REGISTER_RESPONSE"
+    fi
+}
+
+# Uncomment the next line if you want to register a new user
+#register_user
+
 # Login and get token
 echo "Logging in..."
 LOGIN_RESPONSE=$(curl -s -X POST "${API_URL}/login" \
@@ -25,6 +44,10 @@ fi
 
 echo "Successfully logged in and got token"
 
+# Main script execution
+
+
+
 # Upload file
 echo "Uploading file..."
 UPLOAD_RESPONSE=$(curl -s -X POST "${API_URL}/upload" \
@@ -33,8 +56,6 @@ UPLOAD_RESPONSE=$(curl -s -X POST "${API_URL}/upload" \
     -F "outputFormat=${OUTPUT_FORMAT}")
 
 echo "Upload response: $UPLOAD_RESPONSE"
-FILENAME=$(echo $UPLOAD_RESPONSE | jq -r '.convertedName')
-echo "Converted filename: $FILENAME"
 
 # Check if the response is valid JSON
 if echo "$UPLOAD_RESPONSE" | jq empty 2>/dev/null; then
@@ -44,7 +65,8 @@ if echo "$UPLOAD_RESPONSE" | jq empty 2>/dev/null; then
         handle_error "Failed to parse upload status from response: $UPLOAD_RESPONSE"
     elif [ "$UPLOAD_STATUS" == "File uploaded and converted successfully" ]; then
         echo "File uploaded and converted successfully"
-        echo "Converted filename: $FILENAME"
+        FILENAME=$(echo $UPLOAD_RESPONSE | jq -r '.convertedName')
+        echo "Converted filename: $(echo $UPLOAD_RESPONSE | jq -r '.convertedName')"
     else
         handle_error "File upload failed: $UPLOAD_STATUS"
     fi
@@ -53,6 +75,7 @@ else
     handle_error "Server error: $UPLOAD_RESPONSE"
 fi
 
+ehco $FILENAME
 # Download file
 echo "Downloading converted file..."
 DOWNLOAD_COMMAND="curl -O -J -s -X GET \"${API_URL}/download/${FILENAME}\" -H \"x-access-token: ${TOKEN}\""

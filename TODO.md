@@ -21,14 +21,14 @@ add new version to changelog
 # TODO
 
 - [x] Add new version (0.6.0) to changelog
-- [ ] Update documentation to reflect the use of .env file for configuration
-- [ ] Consider implementing a fallback mechanism if .env file is not present
-- [ ] Remove unused config.json file if it's no longer needed
-- [ ] Investigate and resolve babel-jest dependency conflict for a long-term solution
-- [ ] Ensure all frontend components are using the updated API_URL
-- [ ] Update documentation to reflect the combined frontend and backend setup
-- [ ] Ensure all API endpoints are correctly accessed from the frontend
-- [ ] Update deployment process to build and serve the React app
+- [x] Update documentation to reflect the use of .env file for configuration
+- [x] Implement a fallback mechanism if .env file is not present
+- [x] Remove unused config.json file
+- [x] Investigate and resolve babel-jest dependency conflict
+- [x] Ensure all frontend components are using the updated API_URL
+- [x] Update documentation to reflect the combined frontend and backend setup
+- [x] Ensure all API endpoints are correctly accessed from the frontend
+- [x] Update deployment process to build and serve the React app
 - [ ] Test the combined application thoroughly
 - [ ] Update Docker configuration to build and serve the combined app
 - [ ] Consider implementing server-side rendering for improved performance
@@ -356,3 +356,126 @@ add new version to changelog
 - [ ] Add performance metrics logging
 - [ ] Implement alerts based on log patterns or error frequencies
 - [ ] Create a log retention policy
+
+- [x] Implement proper error handling and display for user operations
+- [x] Add form validation for registration and login
+- [x] Implement token storage for persistent login
+- [ ] Create a separate page or modal for media upload
+- [ ] Implement media item deletion and editing in the frontend
+- [ ] Add styling to the user interface
+- [ ] Implement user roles and permissions
+- [ ] Add unit tests for new React components and media operations
+- [ ] Update API documentation to include new user-related endpoints
+- [ ] Implement real-time updates for media conversion progress
+- [ ] Add support for batch operations on multiple media files
+- [ ] Implement drag-and-drop file upload
+- [ ] Add preview functionality for media files
+- [ ] Implement search and filter options for media items
+- [ ] Optimize performance for large lists of media items
+- [ ] Implement error boundary to catch and display runtime errors
+- [ ] Test the combined application thoroughly
+- [ ] Update Docker configuration to build and serve the combined app
+- [ ] Consider implementing server-side rendering for improved performance
+
+- [x] Create a separate page for media upload
+- [x] Implement media item deletion and editing in the frontend
+- [x] Add basic styling to the user interface
+- [ ] Implement user roles and permissions
+- [ ] Add unit tests for new React components and media operations
+- [ ] Update API documentation to include new user-related endpoints
+- [ ] Implement real-time updates for media conversion progress
+- [ ] Add support for batch operations on multiple media files
+- [ ] Implement drag-and-drop file upload
+- [ ] Add preview functionality for media files
+- [ ] Implement search and filter options for media items
+- [ ] Optimize performance for large lists of media items
+- [ ] Implement error boundary to catch and display runtime errors
+- [ ] Test the combined application thoroughly
+- [ ] Update Docker configuration to build and serve the combined app
+- [ ] Consider implementing server-side rendering for improved performance
+- [ ] Implement proper error handling for media operations
+- [ ] Add form validation for media upload
+- [ ] Implement pagination for media items list
+- [ ] Add loading indicators for asynchronous operations
+- [ ] Implement file type validation on the frontend before upload
+- [ ] Add progress tracking for file uploads and conversions
+- [ ] Implement user authentication state persistence using local storage
+- [ ] Add unit tests for React components and utility functions
+- [ ] Implement end-to-end tests for the entire application flow
+- [ ] Add responsive design for mobile devices
+- [ ] Implement accessibility features (ARIA attributes, keyboard navigation)
+- [ ] Add internationalization support for multiple languages
+
+- [x] Implement drag-and-drop file upload using react-dropzone
+- [ ] Add styling for the dropzone area
+- [ ] Implement file type validation before upload
+- [ ] Add progress indicator for file uploads
+- [ ] Implement error handling for upload failures
+- [ ] Add support for multiple file uploads
+- [ ] Implement cancel upload functionality
+- [ ] Add preview for uploaded files before conversion
+- [ ] Implement real-time updates for conversion progress
+- [ ] Add unit tests for MediaUpload component
+- [ ] Optimize performance for large file uploads
+- [ ] Implement resume functionality for interrupted uploads
+- [ ] Add support for folder uploads
+- [ ] Implement file compression before upload to reduce transfer time
+
+- [x] Fix 'getUserData is not defined' error in App.js
+- [x] Implement getUserData function to fetch user data from the server
+- [ ] Create a '/user' endpoint in the backend to return user data
+- [ ] Add error handling for failed user data fetching
+- [ ] Implement token refresh mechanism to handle expired tokens
+- [ ] Add loading state while fetching user data
+- [ ] Implement proper error handling in child components (MediaUpload, MediaManager, Register, Login)
+- [ ] Add unit tests for getUserData function
+- [ ] Update API documentation to include the new '/user' endpoint
+- [ ] Implement user profile editing functionality
+- [ ] Add user roles and permissions checks in the frontend
+- [ ] Implement remember me functionality for login
+- [ ] Add password reset functionality
+- [ ] Implement email verification for new user registrations
+- [ ] Add social media login options (Google, Facebook, etc.)
+- [ ] Implement two-factor authentication
+- [ ] Add user session management (view active sessions, logout from all devices)
+- [ ] Implement user activity logging
+- [ ] Add user preferences/settings page
+- [ ] Implement user avatar upload and management
+
+- [x] Fix authentication token not being sent with requests
+- [x] Implement token storage using localStorage
+- [x] Update MediaUpload component to include token in requests
+- [x] Update mediaOperations to include token in all API calls
+- [ ] Implement token refresh mechanism
+- [ ] Add error handling for token expiration
+- [ ] Implement secure token storage (e.g., HttpOnly cookies)
+- [ ] Add loading indicators for asynchronous operations
+- [ ] Implement file type validation on the frontend before upload
+- [ ] Add progress tracking for file uploads and conversions
+- [ ] Implement pagination for the media items list
+- [ ] Add search and filter functionality for media items
+- [ ] Implement user roles and permissions in the frontend
+- [ ] Add unit tests for new React components and utility functions
+- [ ] Implement end-to-end tests for the entire application flow
+- [ ] Optimize performance for large lists of media items
+- [ ] Implement a more user-friendly UI design
+- [ ] Add responsive design for mobile devices
+- [ ] Implement accessibility features (ARIA attributes, keyboard navigation)
+- [ ] Add internationalization support for multiple languages
+
+- [x] Add registration functionality to upload.sh script
+- [ ] Implement error handling for registration failures in upload.sh
+- [ ] Add option to specify username and password as command-line arguments
+- [ ] Implement a check to see if the user already exists before registration
+- [ ] Add a flag to force re-registration even if the user exists
+- [ ] Implement token caching to avoid logging in every time the script is run
+- [ ] Add support for refreshing expired tokens
+- [ ] Implement a logout function to invalidate tokens
+- [ ] Add support for different roles (e.g., admin, user) in the registration process
+- [ ] Implement email verification for new user registrations
+- [ ] Add password strength requirements for registration
+- [ ] Implement rate limiting for registration and login attempts
+- [ ] Add support for two-factor authentication
+- [ ] Implement password reset functionality
+- [ ] Add logging for registration and login attempts in the script
+- [ ] Create a separate configuration file for the script to store API URL, default credentials, etc.

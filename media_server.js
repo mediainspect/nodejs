@@ -1,8 +1,11 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const { spawn } = require('child_process');
+
+const dotenv = require('dotenv');
 const fs = require('fs');
+const cors = require('cors');
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const { spawn } = require('child_process');
 const path = require('path');
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
@@ -10,15 +13,11 @@ const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const winston = require('winston');
 
-// Initialize Express app
-const app = express();
-
-// Configure CORS
-const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3006',
-  optionsSuccessStatus: 200
-};
-app.use(cors(corsOptions));
+if (fs.existsSync('.env')) {
+  dotenv.config();
+} else {
+  console.warn('.env file not found. Using default values.');
+}
 
 // Configure Winston logger
 const logger = winston.createLogger({
@@ -42,7 +41,6 @@ const CONVERTED_DIR = process.env.CONVERTED_DIR || 'converted';
 const HOST = process.env.HOST || 'localhost';
 const OUTPUT_DIR = process.env.OUTPUT_DIR || 'output';
 
-app.use(express.json());
 
 // Ensure directories exist
 [UPLOAD_DIR, CONVERTED_DIR, OUTPUT_DIR].forEach(dir => {
@@ -68,25 +66,32 @@ const fileExtensions = JSON.parse(fs.readFileSync(path.join(__dirname, process.e
 
 logger.info('Loaded protocols and file extensions');
 
-// Generic media operations
-const mediaOperations = {
-  convert: (input, inputFormat, outputFormat) => {
-    logger.info(`Converting media: ${input} from ${inputFormat} to ${outputFormat}`);
-    // Implementation for converting media formats
-  },
-  transcode: (input, outputCodec) => {
-    logger.info(`Transcoding media: ${input} to ${outputCodec}`);
-    // Implementation for transcoding media
-  },
-  extractAudio: (input, output) => {
-    logger.info(`Extracting audio: ${input} to ${output}`);
-    // Implementation for extracting audio from video
-  },
-  extractMetadata: (input) => {
-    logger.info(`Extracting metadata: ${input}`);
-    // Implementation for extracting metadata from media files
-  }
+const ROLES = {
+  ADMIN: 'admin',
+  USER: 'user'
 };
+
+// Middleware to check user role
+const checkRole = (role) => {
+  return (req, res, next) => {
+    if (!req.user || req.user.role !== role) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    next();
+  };
+};
+
+const app = express();
+app.use(express.json());
+// Initialize Express app
+
+// Configure CORS
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:3006',
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
 
 // Mock user database (replace with a real database in production)
 const users = [];
@@ -94,6 +99,48 @@ const users = [];
 // Mock media items (replace with a real database in production)
 const mediaItems = [];
 
+
+// Update user registration to include role
+app.post('/register', async (req, res) => {
+  logger.info('Received registration request', { username: req.body.username });
+  const hashedPassword = bcrypt.hashSync(req.body.password, 8);
+
+  const user = {
+    id: users.length + 1,
+    username: req.body.username,
+    password: hashedPassword,
+    role: ROLES.USER // Default role
+  };
+  users.push(user);
+
+
+  logger.info('New user registered', { username: req.body.username });
+  res.status(201).send({ message: 'User registered successfully' });
+});
+
+
+// User login endpoint
+app.post('/login', (req, res) => {
+  logger.info('Received login request', { username: req.body.username });
+  const user = users.find(u => u.username === req.body.username);
+  if (!user) {
+    logger.warn('Login attempt failed: User not found', { username: req.body.username });
+    return res.status(404).send('No user found.');
+  }
+
+  const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+  if (!passwordIsValid) {
+    logger.warn('Login attempt failed: Invalid password', { username: req.body.username });
+    return res.status(401).send({ auth: false, token: null });
+  }
+
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    expiresIn: 86400 // expires in 24 hours
+  });
+
+  logger.info('User logged in successfully', { username: req.body.username });
+  res.status(200).send({ auth: true, token: token });
+});
 // Middleware to verify JWT token
 const verifyToken = (req, res, next) => {
   const token = req.headers['x-access-token'];
@@ -101,7 +148,7 @@ const verifyToken = (req, res, next) => {
     logger.warn('No token provided for authentication');
     return res.status(403).send({ auth: false, message: 'No token provided.' });
   }
-  
+
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       logger.error('Failed to authenticate token', { error: err });
@@ -113,42 +160,10 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-// User registration endpoint
-app.post('/register', (req, res) => {
-  logger.info('Received registration request', { username: req.body.username });
-  const hashedPassword = bcrypt.hashSync(req.body.password, 8);
-  
-  users.push({
-    id: users.length + 1,
-    username: req.body.username,
-    password: hashedPassword
-  });
-  
-  logger.info('New user registered', { username: req.body.username });
-  res.status(201).send({ message: 'User registered successfully' });
-});
-
-// User login endpoint
-app.post('/login', (req, res) => {
-  logger.info('Received login request', { username: req.body.username });
-  const user = users.find(u => u.username === req.body.username);
-  if (!user) {
-    logger.warn('Login attempt failed: User not found', { username: req.body.username });
-    return res.status(404).send('No user found.');
-  }
-  
-  const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
-  if (!passwordIsValid) {
-    logger.warn('Login attempt failed: Invalid password', { username: req.body.username });
-    return res.status(401).send({ auth: false, token: null });
-  }
-  
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: 86400 // expires in 24 hours
-  });
-  
-  logger.info('User logged in successfully', { username: req.body.username });
-  res.status(200).send({ auth: true, token: token });
+// Example of using role-based access control
+app.delete('/media/:id', verifyToken, checkRole(ROLES.ADMIN), (req, res) => {
+  // Delete media item logic
+  // ...
 });
 
 // Apply verifyToken middleware to protected routes
@@ -225,6 +240,20 @@ app.post('/media/operation', (req, res) => {
   }
 });
 
+const { execSync } = require('child_process');
+
+function getDuration(inputPath) {
+  try {
+    const output = execSync(`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${inputPath}"`);
+    return parseFloat(output.toString());
+  } catch (error) {
+    console.error('Error getting video duration:', error);
+    return null;
+  }
+}
+
+
+
 // New endpoint for file upload with on-the-fly conversion
 app.post('/upload', upload.single('file'), (req, res) => {
   logger.info('Received file upload request');
@@ -253,12 +282,25 @@ app.post('/upload', upload.single('file'), (req, res) => {
     outputPath
   ]);
 
-  let ffmpegLogs = '';
+  let progress = 0;
+  // Use this function before starting the conversion
+  const duration = getDuration(inputPath);
+  if (duration === null) {
+    console.error('Unable to determine video duration. Aborting conversion.');
+    // Handle the error appropriately (e.g., send an error response, return from the function)
+    return;
+  }
 
   ffmpeg.stderr.on('data', (data) => {
-    ffmpegLogs += data.toString();
-    logger.debug(`FFmpeg Log: ${data}`);
+    // Parse ffmpeg output to estimate progress
+    const match = data.toString().match(/time=(\d{2}):(\d{2}):(\d{2}.\d{2})/);
+    if (match) {
+      const time = parseFloat(match[1]) * 3600 + parseFloat(match[2]) * 60 + parseFloat(match[3]);
+      progress = Math.round((time / duration) * 100);
+      io.emit('conversionProgress', { filename: outputFileName, progress });
+    }
   });
+
 
   ffmpeg.on('close', (code) => {
     if (code === 0) {
@@ -283,6 +325,28 @@ app.post('/upload', upload.single('file'), (req, res) => {
     });
   });
 });
+
+app.post('/batch-operation', verifyToken, async (req, res) => {
+  const { operation, files } = req.body;
+
+  if (!operation || !files || !Array.isArray(files)) {
+    return res.status(400).json({ message: 'Invalid request' });
+  }
+
+  try {
+    const results = await Promise.all(files.map(file => performOperation(operation, file)));
+    res.json({ results });
+  } catch (error) {
+    res.status(500).json({ message: 'Batch operation failed', error: error.message });
+  }
+});
+
+function performOperation(operation, file) {
+  // Implement the logic for different operations (e.g., convert, delete, etc.)
+  // Return a promise that resolves with the result of the operation
+}
+
+
 
 // Input validation middleware
 const validateMediaItem = [
@@ -365,7 +429,7 @@ app.get('/files', (req, res) => {
 app.get('/download/:fileName', (req, res) => {
   const fileName = req.params.fileName;
   const filePath = path.join(OUTPUT_DIR, fileName);
-  
+
   logger.info('Received file download request', { fileName });
 
   if (fs.existsSync(filePath)) {
@@ -386,26 +450,25 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'app/build', 'index.html'));
 });
 
-function startServer(port, attempt = 1) {
-  app.listen(port, HOST, () => {
-    logger.info(`Media server running at http://${HOST}:${port}`);
-    logger.info(`CORS enabled for origin: ${corsOptions.origin}`);
-  }).on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      logger.error(`Port ${port} is already in use.`);
-      if (attempt < MAX_PORT_ATTEMPTS) {
-        const nextPort = port + 1;
-        logger.info(`Trying port ${nextPort}`);
-        startServer(nextPort, attempt + 1);
-      } else {
-        logger.error(`Failed to find an available port after ${MAX_PORT_ATTEMPTS} attempts.`);
-        process.exit(1);
-      }
+const server = http.createServer(app);
+const io = socketIo(server);
+
+server.listen(PORT, () => {
+  logger.info(`Media server running at http://${HOST}:${PORT}`);
+  logger.info(`CORS enabled for origin: ${corsOptions.origin}`);
+}).on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    logger.error(`Port ${PORT} is already in use.`);
+    if (attempt < MAX_PORT_ATTEMPTS) {
+      const nextPort = port + 1;
+      logger.info(`Trying port ${nextPort}`);
+      startServer(nextPort, attempt + 1);
     } else {
-      logger.error('An error occurred while starting the server:', err);
+      logger.error(`Failed to find an available port after ${MAX_PORT_ATTEMPTS} attempts.`);
       process.exit(1);
     }
-  });
-}
-
-startServer(PORT);
+  } else {
+    logger.error('An error occurred while starting the server:', err);
+    process.exit(1);
+  }
+});

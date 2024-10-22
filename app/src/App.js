@@ -1,27 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Register from './components/Register';
 import Login from './components/Login';
 import Profile from './components/Profile';
-import { uploadFile, convertStream, performMediaOperation, getMediaItems } from './mediaOperations';
+import MediaUpload from './components/MediaUpload';
+import MediaManager from './components/MediaManager';
+import { setToken, getToken, removeToken, isLoggedIn } from './utils/auth';
+import './App.css';
+
+const API_URL = `http://${process.env.REACT_APP_API_HOST || 'localhost'}:${process.env.REACT_APP_API_PORT || 3005}`;
 
 function App() {
   const [user, setUser] = useState(null);
   const [data, setData] = useState(null);
-  const [file, setFile] = useState(null);
-  const [outputFormat, setOutputFormat] = useState('mp4');
-  const [convertedFiles, setConvertedFiles] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (user) {
+      if (isLoggedIn()) {
         try {
-          const mediaData = await getMediaItems();
-          setData(mediaData.results);
-          const filesResponse = await fetch('/files');
-          const filesData = await filesResponse.json();
-          setConvertedFiles(filesData);
+          const response = await axios.get(`${API_URL}/media`, {
+            headers: { 'x-access-token': getToken() }
+          });
+          setData(response.data.results);
         } catch (error) {
           console.error('Error fetching data:', error);
+          setError('Failed to fetch media items');
         }
       }
     };
@@ -31,100 +35,29 @@ function App() {
 
   const handleRegister = (userData) => {
     setUser(userData);
+    setToken(userData.token);
   };
 
   const handleLogin = (userData) => {
     setUser(userData);
+    setToken(userData.token);
   };
 
   const handleLogout = () => {
     setUser(null);
+    removeToken();
     setData(null);
-    setConvertedFiles([]);
-  };
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  const handleUpload = async () => {
-    if (!file) {
-      alert('Please select a file first');
-      return;
-    }
-    try {
-      const result = await uploadFile(file, outputFormat);
-      alert(`File uploaded and converted successfully: ${result.convertedName}`);
-      // Refresh the list of converted files
-      const filesResponse = await fetch('/files');
-      const filesData = await filesResponse.json();
-      setConvertedFiles(filesData);
-    } catch (error) {
-      alert('Error uploading file');
-    }
-  };
-
-  const handleConvertStream = async () => {
-    try {
-      await convertStream('http://example.com/input.mp4', 'http', 'rtmp');
-      alert('Stream converted successfully');
-    } catch (error) {
-      alert('Error converting stream');
-    }
-  };
-
-  const handleMediaOperation = async () => {
-    try {
-      await performMediaOperation('convert', 'input.mp4', ['output.avi']);
-      alert('Media operation performed successfully');
-    } catch (error) {
-      alert('Error performing media operation');
-    }
   };
 
   return (
     <div className="App">
       <h1>Media Server</h1>
+      {error && <div className="error-message">{error}</div>}
       {user ? (
         <>
           <Profile user={user} onLogout={handleLogout} />
-          <div>
-            <input type="file" onChange={handleFileChange} />
-            <select value={outputFormat} onChange={(e) => setOutputFormat(e.target.value)}>
-              <option value="mp4">MP4</option>
-              <option value="avi">AVI</option>
-              <option value="mov">MOV</option>
-            </select>
-            <button onClick={handleUpload}>Upload and Convert</button>
-          </div>
-          <div>
-            <button onClick={handleConvertStream}>Convert Stream</button>
-            <button onClick={handleMediaOperation}>Perform Media Operation</button>
-          </div>
-          {data ? (
-            <div>
-              <h2>Media Items</h2>
-              <ul>
-                {data.map(item => (
-                  <li key={item.id}>{item.title}</li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <p>Loading media items...</p>
-          )}
-          {convertedFiles.length > 0 && (
-            <div>
-              <h2>Converted Files</h2>
-              <ul>
-                {convertedFiles.map(file => (
-                  <li key={file.name}>
-                    <a href={file.url} download>{file.name}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <MediaUpload />
+          <MediaManager data={data} />
         </>
       ) : (
         <>
