@@ -1,5 +1,8 @@
+require('dotenv').config();
 const request = require('supertest');
 const app = require('./media_server');
+const fs = require('fs');
+const path = require('path');
 
 describe('Media Server API', () => {
   let authToken;
@@ -56,6 +59,54 @@ describe('Media Server API', () => {
       expect(response.body.message).toBe('Media item created successfully');
     });
 
-    // Add more tests for other endpoints (update, delete, convert, etc.)
+    it('should convert a stream', async () => {
+      const response = await request(app)
+        .get('/convert')
+        .set('x-access-token', authToken)
+        .query({
+          input: 'http://example.com/test.mp4',
+          inputProtocol: 'http',
+          outputProtocol: 'rtmp'
+        });
+      expect(response.statusCode).toBe(200);
+    });
+
+    it('should perform a media operation', async () => {
+      const response = await request(app)
+        .post('/media/operation')
+        .set('x-access-token', authToken)
+        .send({
+          operation: 'convert',
+          input: 'input.mp4',
+          params: ['output.avi']
+        });
+      expect(response.statusCode).toBe(200);
+      expect(response.body.success).toBe(true);
+    });
+
+    it('should upload and convert a file', async () => {
+      const testFilePath = path.join(__dirname, 'test_files', 'test_video.mp4');
+      const response = await request(app)
+        .post('/upload')
+        .set('x-access-token', authToken)
+        .attach('file', testFilePath)
+        .field('outputFormat', 'avi');
+      expect(response.statusCode).toBe(200);
+      expect(response.body.message).toBe('File uploaded and converted successfully');
+    });
+  });
+
+  describe('Configuration', () => {
+    it('should load protocols from the correct JSON file', () => {
+      const protocols = JSON.parse(fs.readFileSync(path.join(__dirname, process.env.PROTOCOLS_JSON_PATH), 'utf8'));
+      expect(protocols).toBeDefined();
+      expect(Array.isArray(protocols)).toBe(true);
+    });
+
+    it('should load file extensions from the correct JSON file', () => {
+      const fileExtensions = JSON.parse(fs.readFileSync(path.join(__dirname, process.env.FILE_EXTENSIONS_JSON_PATH), 'utf8'));
+      expect(fileExtensions).toBeDefined();
+      expect(Array.isArray(fileExtensions)).toBe(true);
+    });
   });
 });

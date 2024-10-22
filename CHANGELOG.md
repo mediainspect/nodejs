@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2023-04-16
+
+### Added
+- Created a basic React frontend
+- Added Selenium tests for the frontend
+- Created a `test.sh` script to run all tests (backend, frontend, server, and Ansible)
+
+### Changed
+- Updated README.md with instructions for running all tests
+- Updated TODO.md to reflect new completed tasks
+
 ## [0.2.0] - 2023-04-15
 
 ### Added

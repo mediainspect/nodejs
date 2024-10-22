@@ -46,3 +46,7 @@ update changelog and add new version to changelog
 - [x] Move all CSV and JSON data files to a 'data' folder
 - [x] Update paths in code and configuration files
 - [x] Update CHANGELOG.md and add new version
+- [x] Update tests to use .env variables
+- [x] Create basic React frontend
+- [x] Create Selenium tests for frontend
+- [x] Create test.sh script to run all tests

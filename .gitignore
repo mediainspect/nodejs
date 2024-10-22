@@ -134,3 +134,4 @@ dist
 uploads/
 converted/
 /package-lock.json
+/frontend/package-lock.json
