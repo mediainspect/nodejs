@@ -9,6 +9,7 @@ function App() {
   const [data, setData] = useState(null);
   const [file, setFile] = useState(null);
   const [outputFormat, setOutputFormat] = useState('mp4');
+  const [convertedFiles, setConvertedFiles] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,6 +17,9 @@ function App() {
         try {
           const mediaData = await getMediaItems();
           setData(mediaData.results);
+          const filesResponse = await fetch('/files');
+          const filesData = await filesResponse.json();
+          setConvertedFiles(filesData);
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -36,6 +40,7 @@ function App() {
   const handleLogout = () => {
     setUser(null);
     setData(null);
+    setConvertedFiles([]);
   };
 
   const handleFileChange = (e) => {
@@ -50,6 +55,10 @@ function App() {
     try {
       const result = await uploadFile(file, outputFormat);
       alert(`File uploaded and converted successfully: ${result.convertedName}`);
+      // Refresh the list of converted files
+      const filesResponse = await fetch('/files');
+      const filesData = await filesResponse.json();
+      setConvertedFiles(filesData);
     } catch (error) {
       alert('Error uploading file');
     }
@@ -93,13 +102,28 @@ function App() {
             <button onClick={handleMediaOperation}>Perform Media Operation</button>
           </div>
           {data ? (
-            <ul>
-              {data.map(item => (
-                <li key={item.id}>{item.title}</li>
-              ))}
-            </ul>
+            <div>
+              <h2>Media Items</h2>
+              <ul>
+                {data.map(item => (
+                  <li key={item.id}>{item.title}</li>
+                ))}
+              </ul>
+            </div>
           ) : (
-            <p>Loading...</p>
+            <p>Loading media items...</p>
+          )}
+          {convertedFiles.length > 0 && (
+            <div>
+              <h2>Converted Files</h2>
+              <ul>
+                {convertedFiles.map(file => (
+                  <li key={file.name}>
+                    <a href={file.url} download>{file.name}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </>
       ) : (

@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2023-05-30
+
+### Added
+- Implemented file download functionality in the upload script
+- Added comprehensive logging for all methods in media_server.js
+- Created endpoints to list and download converted files
+- Implemented file saving for converted streams
+
+### Changed
+- Updated React app to work with new backend functionality
+- Refactored upload.sh script to handle both JSON and non-JSON responses
+- Modified FFmpeg settings in media_server.js for better compatibility
+
+### Fixed
+- Resolved issues with file conversion and download in media_server.js
+- Fixed CORS issues between media_server.js and React app
+
 ## [0.6.0] - 2023-05-25
 
 ### Added

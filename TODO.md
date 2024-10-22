@@ -214,3 +214,145 @@ add new version to changelog
 - [ ] Implement a retry mechanism for failed uploads in upload.sh
 - [ ] Add support for uploading multiple files in a single script execution
 - [ ] Implement progress tracking for large file uploads
+- [x] Fix bash upload script in test folder
+- [ ] Add more robust error handling in upload script
+- [ ] Implement retry mechanism for failed uploads
+- [ ] Add option to specify input file and output format as command-line arguments
+- [ ] Create a test suite for the upload script
+- [ ] Implement progress tracking for large file uploads
+- [ ] Add support for uploading multiple files
+- [ ] Create a configuration file for the upload script to store API URL, credentials, etc.
+- [ ] Implement logging in the upload script
+- [ ] Add option to validate file before upload (e.g., check file type, size)
+- [ ] Create a user-friendly interface for the upload script (e.g., prompts for missing information)
+
+- [x] Update upload.sh script to handle both JSON and non-JSON responses
+- [ ] Investigate why the server is returning a non-JSON response on conversion failure
+- [ ] Update server-side error handling to always return JSON responses
+- [ ] Add more detailed error logging on the server side for conversion failures
+- [ ] Implement a retry mechanism for failed conversions
+- [ ] Add progress tracking for file uploads and conversions
+- [ ] Create a more robust error handling system in the React frontend
+- [ ] Implement file type validation before upload
+- [ ] Add support for cancelling ongoing uploads or conversions
+- [ ] Create a dashboard for monitoring conversion jobs
+- [ ] Implement email notifications for completed or failed conversions
+- [ ] Add support for batch uploads and conversions
+- [ ] Create a separate microservice for handling media conversions
+- [ ] Implement a queue system for managing multiple conversion jobs
+- [ ] Add support for custom conversion settings (e.g., bitrate, resolution)
+- [ ] Implement a caching system to avoid redundant conversions of the same file
+
+- [x] Fix FFmpeg conversion error in media_server.js
+- [ ] Implement proper error handling for FFmpeg conversion failures
+- [ ] Add support for multiple video codecs in the conversion process
+- [ ] Create a configuration file for FFmpeg settings
+- [ ] Implement a check for FFmpeg installation and required codecs on server startup
+- [ ] Add detailed logging for FFmpeg operations
+- [ ] Implement a fallback mechanism for unsupported codecs
+- [ ] Create a separate service for handling video conversions
+- [ ] Implement progress tracking for long-running conversions
+- [ ] Add support for cancelling ongoing conversions
+- [ ] Implement queue system for handling multiple conversion requests
+- [ ] Add unit tests for the file conversion process
+- [ ] Optimize FFmpeg settings for better performance and quality
+- [ ] Implement error notifications for failed conversions (e.g., email alerts)
+- [ ] Add support for custom FFmpeg parameters in the API
+
+- [x] Implement file saving for converted streams
+- [x] Create endpoint to list saved files
+- [x] Create endpoint to download saved files
+- [ ] Implement file cleanup mechanism to remove old converted files
+- [ ] Add pagination to the file list endpoint
+- [ ] Implement file metadata storage (e.g., original name, conversion date)
+- [ ] Add file type filtering to the file list endpoint
+- [ ] Implement user-specific file storage and access control
+- [ ] Add option to specify custom output file names
+- [ ] Implement progress tracking for long-running conversions
+- [ ] Add support for multiple simultaneous conversions
+- [ ] Implement file conversion queue system
+- [ ] Add error handling for disk space issues
+- [ ] Implement file integrity checks after conversion
+- [ ] Add support for resumable downloads for large files
+- [ ] Implement file preview generation for video/audio files
+
+- [x] Update React app to work with the new backend functionality
+- [x] Add file listing and download functionality to the frontend
+- [ ] Implement error handling for file operations in the frontend
+- [ ] Add loading indicators for asynchronous operations
+- [ ] Implement file type validation on the frontend before upload
+- [ ] Add progress tracking for file uploads and conversions
+- [ ] Implement pagination for the media items list
+- [ ] Add search and filter functionality for media items and converted files
+- [ ] Implement user authentication state persistence (e.g., using local storage)
+- [ ] Add form validation for login and registration forms
+- [ ] Implement a more robust state management solution (e.g., Redux or Context API)
+- [ ] Add unit tests for React components and utility functions
+- [ ] Implement end-to-end tests for the entire application flow
+- [ ] Optimize performance for large lists of media items and files
+- [ ] Implement a more user-friendly UI design
+- [ ] Add responsive design for mobile devices
+- [ ] Implement accessibility features (ARIA attributes, keyboard navigation)
+- [ ] Add internationalization support for multiple languages
+
+- [x] Add comprehensive logging for all methods in media_server.js
+- [ ] Implement log rotation to manage log file sizes
+- [ ] Add log analysis tools to monitor application health and performance
+- [ ] Create a dashboard for visualizing log data
+- [ ] Implement centralized logging for distributed deployments
+- [ ] Add request ID to logs for better request tracing
+- [ ] Implement log filtering and searching capabilities
+- [ ] Add performance metrics logging
+- [ ] Implement alerts based on log patterns or error frequencies
+- [ ] Create a log retention policy
+- [ ] Add logging for database operations when implemented
+- [ ] Implement logging for authentication and authorization events
+- [ ] Add logging for file system operations
+- [ ] Create a log format that's easily parseable by log analysis tools
+- [ ] Implement different log levels for development and production environments
+- [ ] Add error handling for FFmpeg process failures
+- [ ] Implement file type validation before processing
+- [ ] Add support for concurrent file processing
+- [ ] Implement a job queue for media operations
+- [ ] Add unit tests for new logging functionality
+- [ ] Update documentation to reflect new logging capabilities
+
+- [x] Update upload.sh script to download the converted file
+- [ ] Implement error handling for file download in upload.sh
+- [ ] Add option to specify custom download location in upload.sh
+- [ ] Implement file integrity check after download (e.g., MD5 checksum)
+- [ ] Add progress bar for file upload and download in upload.sh
+- [ ] Implement retry mechanism for failed downloads
+- [ ] Add support for resuming interrupted downloads
+- [ ] Create a separate download script for batch downloading of converted files
+- [ ] Implement file cleanup on the server after successful download
+- [ ] Add logging for upload and download operations in upload.sh
+- [ ] Create a user-friendly interface for the upload and download process
+
+- [x] Create new version (0.7.0) in changelog
+- [ ] Update README.md to reflect new features and changes
+- [ ] Implement error handling for file operations in the frontend
+- [ ] Add loading indicators for asynchronous operations
+- [ ] Implement file type validation on the frontend before upload
+- [ ] Add progress tracking for file uploads and conversions
+- [ ] Implement pagination for the media items list
+- [ ] Add search and filter functionality for media items and converted files
+- [ ] Implement user authentication state persistence (e.g., using local storage)
+- [ ] Add form validation for login and registration forms
+- [ ] Implement a more robust state management solution (e.g., Redux or Context API)
+- [ ] Add unit tests for new React components and utility functions
+- [ ] Implement end-to-end tests for the entire application flow
+- [ ] Optimize performance for large lists of media items and files
+- [ ] Implement a more user-friendly UI design
+- [ ] Add responsive design for mobile devices
+- [ ] Implement accessibility features (ARIA attributes, keyboard navigation)
+- [ ] Add internationalization support for multiple languages
+- [ ] Implement log rotation to manage log file sizes
+- [ ] Add log analysis tools to monitor application health and performance
+- [ ] Create a dashboard for visualizing log data
+- [ ] Implement centralized logging for distributed deployments
+- [ ] Add request ID to logs for better request tracing
+- [ ] Implement log filtering and searching capabilities
+- [ ] Add performance metrics logging
+- [ ] Implement alerts based on log patterns or error frequencies
+- [ ] Create a log retention policy

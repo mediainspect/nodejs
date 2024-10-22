@@ -40,12 +40,15 @@ const MAX_PORT_ATTEMPTS = 10;
 const UPLOAD_DIR = process.env.UPLOAD_DIR || 'uploads';
 const CONVERTED_DIR = process.env.CONVERTED_DIR || 'converted';
 const HOST = process.env.HOST || 'localhost';
+const OUTPUT_DIR = process.env.OUTPUT_DIR || 'output';
 
 app.use(express.json());
 
-// Ensure upload and converted directories exist
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-fs.mkdirSync(CONVERTED_DIR, { recursive: true });
+// Ensure directories exist
+[UPLOAD_DIR, CONVERTED_DIR, OUTPUT_DIR].forEach(dir => {
+  fs.mkdirSync(dir, { recursive: true });
+  logger.info(`Ensured directory exists: ${dir}`);
+});
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -112,6 +115,7 @@ const verifyToken = (req, res, next) => {
 
 // User registration endpoint
 app.post('/register', (req, res) => {
+  logger.info('Received registration request', { username: req.body.username });
   const hashedPassword = bcrypt.hashSync(req.body.password, 8);
   
   users.push({
@@ -126,6 +130,7 @@ app.post('/register', (req, res) => {
 
 // User login endpoint
 app.post('/login', (req, res) => {
+  logger.info('Received login request', { username: req.body.username });
   const user = users.find(u => u.username === req.body.username);
   if (!user) {
     logger.warn('Login attempt failed: User not found', { username: req.body.username });
@@ -153,6 +158,7 @@ app.use('/upload', verifyToken);
 
 app.get('/convert', (req, res) => {
   const { input, inputProtocol, outputProtocol } = req.query;
+  logger.info('Received convert request', { input, inputProtocol, outputProtocol });
 
   if (!input || !inputProtocol || !outputProtocol) {
     logger.warn('Convert request missing required parameters');
@@ -166,17 +172,18 @@ app.get('/convert', (req, res) => {
     return res.status(400).send('Unsupported protocol');
   }
 
-  logger.info('Starting stream conversion', { input, inputProtocol, outputProtocol });
+  const outputFileName = `${Date.now()}_converted.${outputProtocol}`;
+  const outputPath = path.join(OUTPUT_DIR, outputFileName);
+
+  logger.info('Starting stream conversion', { input, inputProtocol, outputProtocol, outputPath });
 
   const ffmpeg = spawn('ffmpeg', [
     '-i', `${inputProtocol}:${input}`,
     '-c:v', process.env.FFMPEG_VIDEO_CODEC || 'libx264',
     '-c:a', process.env.FFMPEG_AUDIO_CODEC || 'aac',
     '-f', outputProtocol,
-    'pipe:1'
+    outputPath
   ]);
-
-  ffmpeg.stdout.pipe(res);
 
   ffmpeg.stderr.on('data', (data) => {
     logger.error(`FFmpeg Error: ${data}`);
@@ -185,11 +192,10 @@ app.get('/convert', (req, res) => {
   ffmpeg.on('close', (code) => {
     if (code !== 0) {
       logger.error(`FFmpeg process exited with code ${code}`);
-      if (!res.headersSent) {
-        res.status(500).send('Conversion failed');
-      }
+      res.status(500).send('Conversion failed');
     } else {
       logger.info('Stream conversion completed successfully');
+      res.json({ message: 'Conversion successful', fileName: outputFileName });
     }
   });
 });
@@ -197,6 +203,7 @@ app.get('/convert', (req, res) => {
 // New endpoint for generic media operations
 app.post('/media/operation', (req, res) => {
   const { operation, input, params } = req.body;
+  logger.info('Received media operation request', { operation, input, params });
 
   if (!operation || !input) {
     logger.warn('Media operation request missing required parameters');
@@ -220,15 +227,16 @@ app.post('/media/operation', (req, res) => {
 
 // New endpoint for file upload with on-the-fly conversion
 app.post('/upload', upload.single('file'), (req, res) => {
+  logger.info('Received file upload request');
   if (!req.file) {
     logger.warn('Upload request without file');
-    return res.status(400).send('No file uploaded.');
+    return res.status(400).json({ error: 'No file uploaded.' });
   }
 
   const { outputFormat } = req.body;
   if (!outputFormat) {
     logger.warn('Upload request without output format');
-    return res.status(400).send('Output format not specified.');
+    return res.status(400).json({ error: 'Output format not specified.' });
   }
 
   const inputPath = req.file.path;
@@ -239,13 +247,17 @@ app.post('/upload', upload.single('file'), (req, res) => {
 
   const ffmpeg = spawn('ffmpeg', [
     '-i', inputPath,
-    '-c:v', process.env.FFMPEG_VIDEO_CODEC || 'libx264',
-    '-c:a', process.env.FFMPEG_AUDIO_CODEC || 'aac',
+    '-c:v', 'mpeg4',
+    '-c:a', 'aac',
+    '-q:v', '1',
     outputPath
   ]);
 
+  let ffmpegLogs = '';
+
   ffmpeg.stderr.on('data', (data) => {
-    logger.error(`FFmpeg Error: ${data}`);
+    ffmpegLogs += data.toString();
+    logger.debug(`FFmpeg Log: ${data}`);
   });
 
   ffmpeg.on('close', (code) => {
@@ -257,13 +269,18 @@ app.post('/upload', upload.single('file'), (req, res) => {
         convertedName: outputFileName
       });
     } else {
-      logger.error('File conversion failed', { code });
-      res.status(500).send('Conversion failed');
+      logger.error('File conversion failed', { code, ffmpegLogs });
+      res.status(500).json({ error: 'Conversion failed', details: ffmpegLogs });
     }
 
     // Clean up the original uploaded file
-    fs.unlinkSync(inputPath);
-    logger.info('Cleaned up original uploaded file', { inputPath });
+    fs.unlink(inputPath, (err) => {
+      if (err) {
+        logger.error('Error cleaning up original file', { error: err, inputPath });
+      } else {
+        logger.info('Cleaned up original uploaded file', { inputPath });
+      }
+    });
   });
 });
 
@@ -284,15 +301,15 @@ const validateMediaItem = [
 
 // Example route for creating a media item with validation
 app.post('/media', verifyToken, validateMediaItem, (req, res) => {
+  logger.info('Creating new media item', { title: req.body.title, type: req.body.type });
   // Create media item logic here
-  logger.info('New media item created', { title: req.body.title, type: req.body.type });
   res.status(201).json({ message: 'Media item created successfully' });
 });
 
 // Example route for updating a media item with validation
 app.put('/media/:id', verifyToken, validateMediaItem, (req, res) => {
+  logger.info('Updating media item', { id: req.params.id, title: req.body.title, type: req.body.type });
   // Update media item logic here
-  logger.info('Media item updated', { id: req.params.id, title: req.body.title, type: req.body.type });
   res.json({ message: 'Media item updated successfully' });
 });
 
@@ -302,6 +319,8 @@ app.get('/media', verifyToken, (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
+
+  logger.info('Fetching media items', { page, limit });
 
   const results = {};
 
@@ -323,6 +342,39 @@ app.get('/media', verifyToken, (req, res) => {
 
   logger.info('Media items retrieved', { page, limit, itemCount: results.results.length });
   res.json(results);
+});
+
+// New endpoint to list converted files
+app.get('/files', (req, res) => {
+  logger.info('Fetching list of converted files');
+  fs.readdir(OUTPUT_DIR, (err, files) => {
+    if (err) {
+      logger.error('Error reading output directory', { error: err });
+      return res.status(500).send('Error reading files');
+    }
+    const fileList = files.map(file => ({
+      name: file,
+      url: `/download/${file}`
+    }));
+    logger.info('File list retrieved', { fileCount: fileList.length });
+    res.json(fileList);
+  });
+});
+
+// New endpoint to download converted files
+app.get('/download/:fileName', (req, res) => {
+  const fileName = req.params.fileName;
+  const filePath = path.join(OUTPUT_DIR, fileName);
+  
+  logger.info('Received file download request', { fileName });
+
+  if (fs.existsSync(filePath)) {
+    logger.info('File found, initiating download', { fileName });
+    res.download(filePath);
+  } else {
+    logger.warn('File not found for download', { fileName });
+    res.status(404).send('File not found');
+  }
 });
 
 // Serve static files from the React app
