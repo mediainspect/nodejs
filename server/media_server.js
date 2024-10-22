@@ -188,7 +188,14 @@ app.get('/convert', (req, res) => {
   }
 
   const outputFileName = `${Date.now()}_converted.${outputProtocol}`;
-  const outputPath = path.join(OUTPUT_DIR, outputFileName);
+  // Add this check before using outputFilename
+  if (!outputFilename) {
+    console.error('outputFilename is undefined');
+    // Handle the error appropriately (e.g., send an error response, return from the function)
+    return;
+  }
+  const outputPath = path.join(__dirname, 'output', outputFilename);
+  // const outputPath = path.join(OUTPUT_DIR, outputFileName);
 
   logger.info('Starting stream conversion', { input, inputProtocol, outputProtocol, outputPath });
 

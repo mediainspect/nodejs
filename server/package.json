@@ -1,11 +1,11 @@
 {
-  "name": "your-project-name",
-  "version": "1.1.0",
+  "name": "mediainspect_server",
+  "version": "1.2.0",
   "scripts": {
     "start": "node media_server.js",
-    "build": "cd app && npm install && npm run build",
-    "dev": "concurrently \"nodemon media_server.js\" \"cd app && npm start\"",
-    "test": "jest && cd app && npm test"
+    "build": "cd ../app && npm install && npm run build",
+    "dev": "concurrently \"nodemon media_server.js\" \"cd ../app && npm start\"",
+    "test": "../node_modules/.bin/jest && cd app && npm test"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

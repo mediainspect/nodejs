@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2024-10-22
+
+### Added
+- Function to get video duration using ffprobe before starting conversion in media_server.js.
+- Error handling for cases where video duration can't be determined.
+
+### Changed
+- Improved progress calculation in media conversion process.
+- Updated error handling in media conversion to check for duration availability.
+
+### Fixed
+- ReferenceError in media conversion process where 'duration' was not defined.
+
 ## [1.1.0] - 2024-10-22
 
 ### Added

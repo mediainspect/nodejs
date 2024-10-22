@@ -18,7 +18,7 @@ mkdir -p uploads converted
 
 # Set up environment variables
 echo "Setting up environment variables..."
-cp .env.example .env
+cp .env.demov .env
 echo "Please edit the .env file with your specific configurations."
 
 # Run tests
