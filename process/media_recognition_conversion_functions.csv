@@ -1,0 +1,11 @@
+Function,Description
+Speech Recognition,Convert spoken words in audio to text
+Audio Transcription,Generate text transcripts from audio files
+Video Captioning,Add text captions to video content
+Scene Detection,Identify and segment different scenes in a video
+Facial Recognition,Identify and track faces in images or video
+Object Detection,Identify and locate objects in images or video
+Audio Fingerprinting,Generate unique identifiers for audio content
+Video Summarization,Create short summaries of longer video content
+Language Identification,Detect the spoken language in audio content
+Emotion Recognition,Identify emotions in speech or facial expressions

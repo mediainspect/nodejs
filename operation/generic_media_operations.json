@@ -1,0 +1,12 @@
+[
+  {"Operation": "Encoding", "Description": "Convert media to a specific format or codec"},
+  {"Operation": "Decoding", "Description": "Extract raw data from encoded media"},
+  {"Operation": "Compression", "Description": "Reduce file size while maintaining quality"},
+  {"Operation": "Decompression", "Description": "Restore compressed media to its original form"},
+  {"Operation": "Trimming", "Description": "Cut portions of media files"},
+  {"Operation": "Splitting", "Description": "Divide media files into multiple parts"},
+  {"Operation": "Merging", "Description": "Combine multiple media files into one"},
+  {"Operation": "Scaling", "Description": "Resize video or change audio sample rate"},
+  {"Operation": "Transcoding", "Description": "Convert media from one format to another"},
+  {"Operation": "Streaming", "Description": "Deliver media content over a network in real-time"}
+]

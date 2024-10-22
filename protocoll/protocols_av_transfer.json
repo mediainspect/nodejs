@@ -1,0 +1,12 @@
+[
+  {"Protocol": "RTP", "Audio": true, "Video": true},
+  {"Protocol": "RTSP", "Audio": true, "Video": true},
+  {"Protocol": "HLS", "Audio": true, "Video": true},
+  {"Protocol": "DASH", "Audio": true, "Video": true},
+  {"Protocol": "WebRTC", "Audio": true, "Video": true},
+  {"Protocol": "SIP", "Audio": true, "Video": true},
+  {"Protocol": "RTMP", "Audio": true, "Video": true},
+  {"Protocol": "HTTP Live Streaming", "Audio": true, "Video": true},
+  {"Protocol": "MPEG-DASH", "Audio": true, "Video": true},
+  {"Protocol": "NDI", "Audio": true, "Video": true}
+]

@@ -1,0 +1,34 @@
+---
+- hosts: media_servers
+  tasks:
+    - name: Check if stream conversion server is running
+      uri:
+        url: http://localhost:3000
+        method: GET
+      register: stream_server_result
+      failed_when: stream_server_result.status != 200
+
+    - name: Check if file conversion server is running
+      uri:
+        url: http://localhost:3001
+        method: GET
+      register: file_server_result
+      failed_when: file_server_result.status != 200
+
+    - name: Test stream conversion
+      uri:
+        url: "http://localhost:3000/convert?input=http://example.com/test.mp4&inputProtocol=http&outputProtocol=rtmp"
+        method: GET
+      register: stream_conversion_result
+      failed_when: stream_conversion_result.status != 200
+
+    - name: Test file conversion
+      uri:
+        url: http://localhost:3001/convert
+        method: POST
+        body_format: form-multipart
+        body:
+          file: "{{ lookup('file', 'test_file.mp4') }}"
+          outputFormat: "webm"
+      register: file_conversion_result
+      failed_when: file_conversion_result.status != 200

@@ -1,0 +1,12 @@
+[
+  {"Function": "Speech Recognition", "Description": "Convert spoken words in audio to text"},
+  {"Function": "Audio Transcription", "Description": "Generate text transcripts from audio files"},
+  {"Function": "Video Captioning", "Description": "Add text captions to video content"},
+  {"Function": "Scene Detection", "Description": "Identify and segment different scenes in a video"},
+  {"Function": "Facial Recognition", "Description": "Identify and track faces in images or video"},
+  {"Function": "Object Detection", "Description": "Identify and locate objects in images or video"},
+  {"Function": "Audio Fingerprinting", "Description": "Generate unique identifiers for audio content"},
+  {"Function": "Video Summarization", "Description": "Create short summaries of longer video content"},
+  {"Function": "Language Identification", "Description": "Detect the spoken language in audio content"},
+  {"Function": "Emotion Recognition", "Description": "Identify emotions in speech or facial expressions"}
+]

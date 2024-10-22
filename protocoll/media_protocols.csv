@@ -1,0 +1,11 @@
+Protocol,Type,Description
+RTP,Audio/Video,Real-time Transport Protocol
+RTSP,Audio/Video,Real Time Streaming Protocol
+HLS,Audio/Video,HTTP Live Streaming
+DASH,Audio/Video,Dynamic Adaptive Streaming over HTTP
+WebRTC,Audio/Video,Web Real-Time Communication
+SIP,Audio/Video,Session Initiation Protocol
+RTMP,Audio/Video,Real-Time Messaging Protocol
+HTTP,Audio/Video,Hypertext Transfer Protocol
+MPEG-DASH,Audio/Video,Dynamic Adaptive Streaming over HTTP
+NDI,Audio/Video,Network Device Interface

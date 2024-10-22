@@ -1,0 +1,12 @@
+[
+  {"Extension": "mp3", "MIME Type": "audio/mpeg", "Type": "Audio"},
+  {"Extension": "wav", "MIME Type": "audio/wav", "Type": "Audio"},
+  {"Extension": "ogg", "MIME Type": "audio/ogg", "Type": "Audio"},
+  {"Extension": "aac", "MIME Type": "audio/aac", "Type": "Audio"},
+  {"Extension": "mp4", "MIME Type": "video/mp4", "Type": "Video"},
+  {"Extension": "avi", "MIME Type": "video/x-msvideo", "Type": "Video"},
+  {"Extension": "mkv", "MIME Type": "video/x-matroska", "Type": "Video"},
+  {"Extension": "webm", "MIME Type": "video/webm", "Type": "Video and Audio"},
+  {"Extension": "mov", "MIME Type": "video/quicktime", "Type": "Video"},
+  {"Extension": "flac", "MIME Type": "audio/flac", "Type": "Audio"}
+]

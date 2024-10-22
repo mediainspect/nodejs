@@ -1,0 +1,11 @@
+Extension,MIME Type,Type
+mp3,audio/mpeg,Audio
+wav,audio/wav,Audio
+ogg,audio/ogg,Audio
+aac,audio/aac,Audio
+mp4,video/mp4,Video
+avi,video/x-msvideo,Video
+mkv,video/x-matroska,Video
+webm,video/webm,Video
+mov,video/quicktime,Video
+flv,video/x-flv,Video

@@ -1,0 +1,52 @@
+[
+  {
+    "extension": "mp3",
+    "mimeType": "audio/mpeg",
+    "type": "Audio"
+  },
+  {
+    "extension": "wav",
+    "mimeType": "audio/wav",
+    "type": "Audio"
+  },
+  {
+    "extension": "ogg",
+    "mimeType": "audio/ogg",
+    "type": "Audio"
+  },
+  {
+    "extension": "aac",
+    "mimeType": "audio/aac",
+    "type": "Audio"
+  },
+  {
+    "extension": "mp4",
+    "mimeType": "video/mp4",
+    "type": "Video"
+  },
+  {
+    "extension": "avi",
+    "mimeType": "video/x-msvideo",
+    "type": "Video"
+  },
+  {
+    "extension": "mkv",
+    "mimeType": "video/x-matroska",
+    "type": "Video"
+  },
+  {
+    "extension": "webm",
+    "mimeType": "video/webm",
+    "type": "Video"
+  },
+  {
+    "extension": "mov",
+    "mimeType": "video/quicktime",
+    "type": "Video"
+  },
+  {
+    "extension": "flv",
+    "mimeType": "video/x-flv",
+    "type": "Video"
+  }
+]

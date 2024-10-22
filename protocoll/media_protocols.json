@@ -1,0 +1,52 @@
+[
+  {
+    "protocol": "RTP",
+    "type": "Audio/Video",
+    "description": "Real-time Transport Protocol"
+  },
+  {
+    "protocol": "RTSP",
+    "type": "Audio/Video",
+    "description": "Real Time Streaming Protocol"
+  },
+  {
+    "protocol": "HLS",
+    "type": "Audio/Video",
+    "description": "HTTP Live Streaming"
+  },
+  {
+    "protocol": "DASH",
+    "type": "Audio/Video",
+    "description": "Dynamic Adaptive Streaming over HTTP"
+  },
+  {
+    "protocol": "WebRTC",
+    "type": "Audio/Video",
+    "description": "Web Real-Time Communication"
+  },
+  {
+    "protocol": "SIP",
+    "type": "Audio/Video",
+    "description": "Session Initiation Protocol"
+  },
+  {
+    "protocol": "RTMP",
+    "type": "Audio/Video",
+    "description": "Real-Time Messaging Protocol"
+  },
+  {
+    "protocol": "HTTP",
+    "type": "Audio/Video",
+    "description": "Hypertext Transfer Protocol"
+  },
+  {
+    "protocol": "MPEG-DASH",
+    "type": "Audio/Video",
+    "description": "Dynamic Adaptive Streaming over HTTP"
+  },
+  {
+    "protocol": "NDI",
+    "type": "Audio/Video",
+    "description": "Network Device Interface"
+  }
+]

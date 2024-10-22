@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "test": "mocha test/*.test.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

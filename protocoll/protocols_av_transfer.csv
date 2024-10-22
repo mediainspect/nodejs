@@ -1,0 +1,11 @@
+Protocol,Audio,Video
+RTP,Yes,Yes
+RTSP,Yes,Yes
+HLS,Yes,Yes
+DASH,Yes,Yes
+WebRTC,Yes,Yes
+SIP,Yes,Yes
+RTMP,Yes,Yes
+HTTP Live Streaming,Yes,Yes
+MPEG-DASH,Yes,Yes
+NDI,Yes,Yes

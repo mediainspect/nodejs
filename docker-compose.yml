@@ -1,0 +1,28 @@
+version: '3'
+services:
+  stream_converter:
+    build: .
+    ports:
+      - "${STREAM_SERVER_PORT}:${STREAM_SERVER_PORT}"
+    command: node media_server.js
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    environment:
+      - SERVER_FILE=media_server.js
+    network_mode: "host"  # This allows the container to access various network protocols
+
+  file_converter:
+    build: .
+    ports:
+      - "${FILE_SERVER_PORT}:${FILE_SERVER_PORT}"
+    command: node media_converter_server.js
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    environment:
+      - SERVER_FILE=media_converter_server.js

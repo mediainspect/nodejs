@@ -1,0 +1,11 @@
+Operation,Description
+Encoding,Convert media to a specific format or codec
+Decoding,Extract raw data from encoded media
+Compression,Reduce file size while maintaining quality
+Decompression,Restore compressed media to its original form
+Trimming,Cut portions of media files
+Splitting,Divide media files into multiple parts
+Merging,Combine multiple media files into one
+Scaling,Resize video or change audio sample rate
+Transcoding,Convert media from one format to another
+Streaming,Deliver media content over a network in real-time
